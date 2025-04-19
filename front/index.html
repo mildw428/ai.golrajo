@@ -7,6 +7,12 @@
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <script id="adsbygoogle-init" strategy="afterInteractive"
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4166816153257661"
+        crossOrigin="anonymous"></script>
+    <script id="adsbygoogle-config" strategy="afterInteractive" dangerouslySetInnerHTML={{ __html: `
+        (adsbygoogle=window.adsbygoogle || []).push({ google_ad_client: "ca-pub-4166816153257661" ,
+        enable_page_level_ads: true, overlays: {bottom: true} }); `, }}></script>
 </head>
 <body>
     <div class="container">
@@ -29,7 +35,7 @@
                 </div>
                 <button class="btn primary" id="add-files-btn"><i class="fas fa-plus"></i> 파일 추가</button>
             </section>
-            
+
             <section id="preview-section" class="preview-section hidden">
                 <h2>이미지 미리보기 및 설정</h2>
                 <div class="control-bar">
@@ -40,12 +46,12 @@
                         <button class="btn" id="move-down-btn"><i class="fas fa-arrow-down"></i></button>
                     </div>
                 </div>
-                
+
                 <div class="images-container" id="images-container">
                     <!-- 업로드된 이미지가 여기에 표시됩니다 -->
                 </div>
             </section>
-            
+
             <section id="merge-section" class="merge-section">
                 <h2>병합 설정</h2>
                 <div class="merge-options">
@@ -57,12 +63,12 @@
                             <option value="horizontal_2x">가로 2개씩</option>
                         </select>
                     </div>
-                    
+
                     <div class="option-group">
                         <label for="image-spacing">이미지 간격 (px):</label>
                         <input type="number" id="image-spacing" class="form-control" value="6" min="0" max="100">
                     </div>
-                    
+
                     <div class="option-group">
                         <label for="alignment">정렬:</label>
                         <select id="alignment" class="form-control">
@@ -71,28 +77,28 @@
                             <option value="right">오른쪽</option>
                         </select>
                     </div>
-                    
+
                     <div class="option-group" id="target-width-group">
                         <label for="target-width">최대 폭 (px):</label>
                         <input type="number" id="target-width" class="form-control" value="550" min="100" max="5000">
                     </div>
-                    
+
                     <div class="option-group hidden" id="target-height-group">
                         <label for="target-height">최대 높이 (px):</label>
                         <input type="number" id="target-height" class="form-control" value="800" min="100" max="5000">
                     </div>
-                    
+
                     <div class="option-group">
                         <label for="border-color">테두리 색상:</label>
                         <input type="color" id="border-color" class="form-control color-input" value="#cccccc">
                         <button class="btn small" id="no-border-btn">테두리 없음</button>
                     </div>
-                    
+
                     <div class="option-group">
                         <label for="border-width">테두리 두께 (px):</label>
                         <input type="number" id="border-width" class="form-control" value="1" min="1" max="10">
                     </div>
-                    
+
                     <div class="option-group">
                         <label for="output-format">출력 형식:</label>
                         <select id="output-format" class="form-control">
@@ -103,12 +109,12 @@
                         </select>
                     </div>
                 </div>
-                
+
                 <div class="merge-actions">
                     <button class="btn primary" id="start-merge-btn"><i class="fas fa-object-group"></i> 이미지 병합</button>
                 </div>
             </section>
-            
+
             <section id="result-section" class="result-section hidden">
                 <h2>병합 결과</h2>
                 <div class="result-container">
@@ -125,7 +131,7 @@
                 </div>
             </section>
         </main>
-        
+
         <div id="loading-overlay" class="hidden">
             <div class="loading-spinner"></div>
             <p>이미지 처리 중...</p>
@@ -135,7 +141,7 @@
             <p>© 2025 이미지 병합 사이트 | 개인정보는 30분 내에 자동으로 삭제됩니다.</p>
         </footer>
     </div>
-    
+
     <!-- 이미지 아이템 템플릿 -->
     <template id="image-item-template">
         <div class="image-item">
