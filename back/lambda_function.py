@@ -63,6 +63,8 @@ def lambda_handler(event, context):
             merged_image.save(buffer, format=output_format, quality=quality, optimize=True, subsampling=0)
         elif output_format == "PNG":
             merged_image.save(buffer, format=output_format, optimize=True, compress_level=1)
+        elif output_format == "WEBP":
+            merged_image.save(buffer, format=output_format, quality=quality, method=6)  # method=6은 고품질 압축
         else:
             merged_image.save(buffer, format=output_format, quality=quality)
             

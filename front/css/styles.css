@@ -285,24 +285,44 @@ section h2 {
   font-size: 14px;
 }
 
+/* 색상 선택기 스타일 */
 .color-input {
-  padding: 2px;
-  width: 80px;
+  width: 100%;
+  height: 36px;
+  padding: 0;
+  background-color: #f1f1f1;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
-.remove-btn {
+/* 테두리 없음 버튼 스타일 */
+#no-border-btn {
   position: absolute;
-  top: 10px;
-  left: 10px;
-  padding: 2px 8px;
-  font-size: 0.9rem;
+  bottom: 0;
+  left: 0;
+  font-size: 12px;
+  padding: 4px 8px;
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  margin: 0;
+}
+
+/* 테두리 색상 그룹 */
+.option-group:has(.color-input) {
+  position: relative;
+  padding-bottom: 30px;
+}
+
+/* 테두리 두께와 출력 형식 스타일 맞추기 */
+#border-width, #output-format {
+  height: 36px;
 }
 
 /* 병합 설정 영역 */
 .merge-options {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
   margin-bottom: 20px;
 }
 
@@ -312,8 +332,9 @@ section h2 {
 
 .option-group label {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
   font-weight: 500;
+  font-size: 14px;
 }
 
 .merge-actions {
@@ -416,9 +437,21 @@ footer {
   .btn {
     width: 100%;
   }
+  
+  .option-group:has(.color-input) {
+    padding-bottom: 40px;
+  }
 }
 
 /* 체크박스 스타일 */
 input[type="checkbox"] {
   margin-right: 5px;
+}
+
+.remove-btn {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 2px 8px;
+  font-size: 0.9rem;
 }
