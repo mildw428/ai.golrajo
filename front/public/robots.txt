@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://www.이미지병합사이트.com/sitemap.xml 
+Sitemap: https://image-merge.golrajo.com/sitemap.xml 
