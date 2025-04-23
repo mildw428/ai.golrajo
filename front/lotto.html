@@ -4,10 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI 자동 갱신 로또번호 생성기</title>
+    <script src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4166816153257661"
+        crossOrigin="anonymous" async></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Arial', sans-serif; }
-        body { background-color: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        .container { background-color: white; border-radius: 10px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); width: 100%; max-width: 500px; padding: 30px; text-align: center; }
+        body { background-color: #f5f5f5; min-height: 100vh; padding: 20px; }
+        
+        .page-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        
+        @media (min-width: 1024px) {
+            .page-container {
+                grid-template-columns: 160px 1fr 160px;
+            }
+        }
+        
+        .main-container {
+            display: flex;
+            justify-content: center;
+        }
+        
+        .container { 
+            background-color: white; 
+            border-radius: 10px; 
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); 
+            width: 100%; 
+            max-width: 500px; 
+            padding: 30px; 
+            text-align: center; 
+        }
+        
         h1 { color: #333; margin-bottom: 20px; }
         .today-date { font-size: 18px; color: #666; margin-bottom: 15px; }
         .next-update { font-size: 14px; color: #888; margin-bottom: 25px; }
@@ -23,17 +55,88 @@
         .num-21-30 { background-color: #EF5350; }
         .num-31-40 { background-color: #66BB6A; }
         .num-41-45 { background-color: #AB47BC; }
+        
+        .ad-container {
+            width: 100%;
+            margin: 20px auto;
+            text-align: center;
+            overflow: hidden;
+        }
+        
+        .ad-sidebar {
+            position: sticky;
+            top: 20px;
+        }
+        
+        .ad-bottom {
+            width: 100%;
+            max-width: 728px;
+            margin: 20px auto;
+        }
+        
+        @media (max-width: 1023px) {
+            .left-sidebar, .right-sidebar {
+                display: none;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>이번주 AI 로또번호</h1>
-        <div class="today-date" id="todayDate"></div>
-        <div class="next-update" id="nextUpdate"></div>
-        <div class="numbers-container" id="numbers"></div>
-        <div class="history" id="history">
-            <h3>이전 번호 기록</h3>
+    <div class="page-container">
+        <div class="left-sidebar">
+            <div class="ad-sidebar">
+                <!-- 좌측 배너 광고 -->
+                <ins class="adsbygoogle"
+                    style="display:block"
+                    data-ad-client="ca-pub-4166816153257661"
+                    data-ad-slot="9411216466"
+                    data-ad-format="auto"
+                    data-full-width-responsive="true"></ins>
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
         </div>
+        
+        <div class="main-container">
+            <div class="container">
+                <h1>이번주 AI 로또번호</h1>
+                <div class="today-date" id="todayDate"></div>
+                <div class="next-update" id="nextUpdate"></div>
+                <div class="numbers-container" id="numbers"></div>
+                <div class="history" id="history">
+                    <h3>이전 번호 기록</h3>
+                </div>
+            </div>
+        </div>
+        
+        <div class="right-sidebar">
+            <div class="ad-sidebar">
+                <!-- 우측 배너 광고 -->
+                <ins class="adsbygoogle"
+                    style="display:block"
+                    data-ad-client="ca-pub-4166816153257661"
+                    data-ad-slot="9411216466"
+                    data-ad-format="auto"
+                    data-full-width-responsive="true"></ins>
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 하단 광고 -->
+    <div class="ad-bottom">
+        <ins class="adsbygoogle"
+            style="display:block"
+            data-ad-client="ca-pub-4166816153257661"
+            data-ad-slot="9411216466"
+            data-ad-format="auto"
+            data-full-width-responsive="true"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
     </div>
 
     <script>
