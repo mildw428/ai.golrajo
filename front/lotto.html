@@ -460,6 +460,17 @@
                 const oddCount = numbers.filter(n => n % 2 === 1).length;
                 const evenCount = numbers.filter(n => n % 2 === 0).length;
                 
+                // 차이값 계산 (연속된 두 숫자의 차이)
+                const diffs = [];
+                for (let i = 0; i < numbers.length - 1; i++) {
+                    diffs.push(numbers[i+1] - numbers[i]);
+                }
+                const avgDiff = (diffs.reduce((a, b) => a + b, 0) / diffs.length).toFixed(1);
+                
+                // 끝자리 숫자 분석
+                const lastDigits = numbers.map(n => n % 10);
+                const uniqueLastDigits = [...new Set(lastDigits)].length;
+                
                 // 구간별 숫자 분포
                 const ranges = [
                     numbers.filter(n => n >= 1 && n <= 10).length,
@@ -468,6 +479,17 @@
                     numbers.filter(n => n >= 31 && n <= 40).length,
                     numbers.filter(n => n >= 41 && n <= 45).length
                 ];
+                
+                // AC값 (추첨된 번호들의 평균 간격)
+                const acValue = (45 / 6).toFixed(1); // 이론적 AC값
+                const actualAC = ((numbers[numbers.length-1] - numbers[0]) / (numbers.length-1)).toFixed(1);
+                
+                // 번호의 연속성 검사
+                const hasConsecutive = diffs.some(d => d === 1);
+                
+                // 최근 당첨 번호와의 일치 개수 (간단한 예시)
+                const recentWinningNumbers = [3, 7, 12, 24, 31, 45]; // 실제 데이터로 대체 가능
+                const matchCount = numbers.filter(n => recentWinningNumbers.includes(n)).length;
                 
                 // 꿈 내용 표시
                 const dream = dreamInput.value.trim();
@@ -481,12 +503,63 @@
                     `;
                 }
                 
+                // 표 스타일로 분석 결과 표시
                 let analysisHTML = `
-                    <div style="margin-top: 20px; text-align: left; padding: 10px; background-color: #f9f9f9; border-radius: 5px;">
-                        <h3 style="margin-bottom: 10px;">번호 분석</h3>
-                        <p>합계: ${sum} / 평균: ${avg}</p>
-                        <p>홀수: ${oddCount}개, 짝수: ${evenCount}개</p>
-                        <p>구간별: 1-10(${ranges[0]}), 11-20(${ranges[1]}), 21-30(${ranges[2]}), 31-40(${ranges[3]}), 41-45(${ranges[4]})</p>
+                    <div style="margin-top: 20px; text-align: left; padding: 15px; background-color: #f9f9f9; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                        <h3 style="margin-bottom: 15px; color: #333; border-bottom: 2px solid #ddd; padding-bottom: 8px;">로또 번호 분석</h3>
+                        
+                        <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px;">
+                            <tr style="background-color: #f0f0f0;">
+                                <th style="padding: 8px; text-align: left; border-bottom: 1px solid #ddd; width: 50%;">분석 항목</th>
+                                <th style="padding: 8px; text-align: center; border-bottom: 1px solid #ddd; width: 50%;">결과</th>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px; border-bottom: 1px solid #eee;">합계 (Sum)</td>
+                                <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: center;"></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px; border-bottom: 1px solid #eee;">평균값</td>
+                                <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: center;">${avg}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px; border-bottom: 1px solid #eee;">홀/짝 비율</td>
+                                <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: center;">${oddCount}:${evenCount} <span style="color: ${oddCount > 1 && evenCount > 1 ? 'green' : 'gray'}; font-size: 0.8em;">${oddCount > 1 && evenCount > 1 ? '✓ 균형' : ''}</span></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px; border-bottom: 1px solid #eee;">번호간 평균 간격</td>
+                                <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: center;">${avgDiff}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px; border-bottom: 1px solid #eee;">끝자리 다양성</td>
+                                <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: center;">${uniqueLastDigits}/6 <span style="color: ${uniqueLastDigits >= 4 ? 'green' : 'gray'}; font-size: 0.8em;">${uniqueLastDigits >= 4 ? '✓ 다양' : ''}</span></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px; border-bottom: 1px solid #eee;">AC값 (실제/이론)</td>
+                                <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: center;">${actualAC}/${acValue}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px; border-bottom: 1px solid #eee;">연속된 번호</td>
+                                <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: center;">${hasConsecutive ? '있음' : '없음'}</td>
+                            </tr>
+                        </table>
+                        
+                        <div style="margin-top: 15px; margin-bottom: 15px;">
+                            <h4 style="margin-bottom: 8px; font-size: 14px; color: #555;">구간별 분포</h4>
+                            <div style="display: flex; height: 20px; border-radius: 3px; overflow: hidden; margin-top: 5px;">
+                                <div style="width: ${ranges[0]/6*100}%; background-color: #FFB300; height: 100%;" title="1-10: ${ranges[0]}개"></div>
+                                <div style="width: ${ranges[1]/6*100}%; background-color: #29B6F6; height: 100%;" title="11-20: ${ranges[1]}개"></div>
+                                <div style="width: ${ranges[2]/6*100}%; background-color: #EF5350; height: 100%;" title="21-30: ${ranges[2]}개"></div>
+                                <div style="width: ${ranges[3]/6*100}%; background-color: #66BB6A; height: 100%;" title="31-40: ${ranges[3]}개"></div>
+                                <div style="width: ${ranges[4]/6*100}%; background-color: #AB47BC; height: 100%;" title="41-45: ${ranges[4]}개"></div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-top: 5px; font-size: 12px; color: #777;">
+                                <span>1-10 (${ranges[0]})</span>
+                                <span>11-20 (${ranges[1]})</span>
+                                <span>21-30 (${ranges[2]})</span>
+                                <span>31-40 (${ranges[3]})</span>
+                                <span>41-45 (${ranges[4]})</span>
+                            </div>
+                        </div>
                         ${dreamAnalysisText}
                     </div>
                 `;
