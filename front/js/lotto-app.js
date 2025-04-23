@@ -4,8 +4,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const todayDateElement = document.getElementById('todayDate');
     const nextUpdateElement = document.getElementById('nextUpdate');
     const generateBtn = document.getElementById('generateBtn');
+    const nameInput = document.getElementById('name');
     const birthdateInput = document.getElementById('birthdate');
     const birthtimeInput = document.getElementById('birthtime');
+    const genderSelect = document.getElementById('gender');
     const dreamInput = document.getElementById('dream');
 
     let history = JSON.parse(localStorage.getItem('lottoHistory')) || [];
@@ -53,12 +55,34 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function generateSeed(birthdate, birthtime, dream) {
+        const name = nameInput.value.trim();
+        const gender = genderSelect.value;
+        
         // 기본 시드 값 (birthdate가 없는 경우 현재 날짜 사용)
         let seed = birthdate ? birthdate : new Date().toISOString().slice(0, 10).replace(/-/g, '');
         
         // 매주 일요일마다 다른 시드 생성을 위해 현재 주의 주간 키 추가
         const weekKey = getSundayWeekKey();
         seed += weekKey;
+        
+        // 이름을 시드에 반영 (이름의 각 문자를 해싱하여 추가)
+        if (name) {
+            let nameHash = 0;
+            for (let i = 0; i < name.length; i++) {
+                // 유니코드 값을 활용하여 한글 이름도 잘 처리되도록 함
+                nameHash = ((nameHash << 5) - nameHash) + name.charCodeAt(i);
+                nameHash = nameHash & nameHash; // 32비트 정수로 변환
+            }
+            // 이름 해시값이 큰 영향을 미치도록 충분히 큰 값을 곱함
+            nameHash = Math.abs(nameHash) * 7919; // 큰 소수를 곱해 분포 향상
+            seed += nameHash.toString();
+        }
+        
+        // 성별을 시드에 반영 (성별에 따라 큰 차이가 나도록 다른 큰 소수를 곱함)
+        if (gender) {
+            const genderFactor = gender === '남자' ? 104729 : 104723; // 두 개의 서로 다른 큰 소수
+            seed += genderFactor.toString();
+        }
         
         // 생년월일, 시간, 꿈 내용을 모두 시드에 반영
         if (birthtime) seed += birthtime;
@@ -141,12 +165,17 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function generateNumbers(birthdate, birthtime, dream) {
+        const name = nameInput.value.trim();
+        const gender = genderSelect.value;
         const seed = generateSeed(birthdate, birthtime, dream);
         const numbers = Array.from({ length: 45 }, (_, i) => i + 1);
         let selectedNumbers = [];
         
         // 개인정보 기반 숫자 선호도 계산
         const personalPatterns = calculatePersonalPattern(birthdate, birthtime);
+        
+        // 성별 기반 가중치 적용
+        const genderWeight = gender === '남자' ? 0.65 : 0.55; // 남자는 65%, 여자는 55%의 가중치
         
         // 꿈 내용이 있는 경우 해시 기반 선택을 위한 준비
         let dreamHashes = [];
@@ -169,12 +198,60 @@ document.addEventListener('DOMContentLoaded', function() {
             dreamHashes = [...new Set(dreamHashes)];
         }
         
+        // 이름 기반 선호 숫자 생성
+        let namePreferences = [];
+        if (name) {
+            for (let i = 0; i < name.length; i++) {
+                const charCode = name.charCodeAt(i);
+                const numValue = (charCode % 45) + 1;
+                namePreferences.push(numValue);
+                
+                // 인접한 두 글자를 결합한 숫자도 추가
+                if (i < name.length - 1) {
+                    const nextCharCode = name.charCodeAt(i + 1);
+                    const combinedValue = ((charCode + nextCharCode) % 45) + 1;
+                    namePreferences.push(combinedValue);
+                }
+            }
+            namePreferences = [...new Set(namePreferences)];
+        }
+        
         // 시드 기반으로 난수 생성하여 번호 선택
         for (let i = 0; i < 6; i++) {
             const randomValue = seededRandom(seed, i);
             
-            // 꿈 해시 기반 선택 (40% 확률, 꿈이 입력된 경우)
-            if (randomValue < 0.4 && dreamHashes.length > 0 && 
+            // 이름 기반 선택 (30% 확률, 이름이 있는 경우)
+            if (randomValue < 0.3 && namePreferences.length > 0 && 
+                numbers.some(n => namePreferences.includes(n))) {
+                const availableNameNumbers = numbers.filter(n => namePreferences.includes(n));
+                const nameIndex = Math.floor(seededRandom(seed + 'name', i) * availableNameNumbers.length);
+                const selected = availableNameNumbers[nameIndex];
+                
+                selectedNumbers.push(selected);
+                numbers.splice(numbers.indexOf(selected), 1);
+            }
+            // 성별 기반 선택 (25% 확률, 성별이 선택된 경우)
+            else if (randomValue < 0.55 && gender) {
+                const isOdd = (n) => n % 2 === 1;
+                const isPreferred = gender === '남자' ? isOdd : (n => !isOdd(n));
+                
+                const genderPreferred = numbers.filter(isPreferred);
+                
+                if (genderPreferred.length > 0) {
+                    const genderIndex = Math.floor(seededRandom(seed + 'gender', i) * genderPreferred.length);
+                    const selected = genderPreferred[genderIndex];
+                    
+                    selectedNumbers.push(selected);
+                    numbers.splice(numbers.indexOf(selected), 1);
+                } else {
+                    // 선호 숫자가 없으면 일반 선택
+                    const randomIndex = Math.floor(seededRandom(seed + i, i) * numbers.length);
+                    selectedNumbers.push(numbers[randomIndex]);
+                    numbers.splice(randomIndex, 1);
+                }
+            }
+            // 꿈 해시 기반 선택 (20% 확률, 꿈이 입력된 경우)
+            else if (randomValue < 0.75 && dreamHashes.length > 0 && 
                 numbers.some(n => dreamHashes.includes(n))) {
                 // 꿈 해시에서 유효한 숫자 선택
                 const availableDreamNumbers = numbers.filter(n => dreamHashes.includes(n));
@@ -184,8 +261,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 selectedNumbers.push(selected);
                 numbers.splice(numbers.indexOf(selected), 1);
             }
-            // 개인 패턴 기반 선택 (30% 확률)
-            else if (randomValue < 0.7 && personalPatterns.length > 0 && 
+            // 개인 패턴 기반 선택 (15% 확률)
+            else if (randomValue < 0.9 && personalPatterns.length > 0 && 
                     numbers.some(n => personalPatterns.includes(n))) {
                 const availablePatterns = numbers.filter(n => personalPatterns.includes(n));
                 const patternIndex = Math.floor(seededRandom(seed + 'pattern', i) * availablePatterns.length);
@@ -208,6 +285,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function calculatePersonalPattern(birthdate, birthtime) {
         const patterns = [];
+        const name = nameInput.value.trim();
+        const gender = genderSelect.value;
         
         // 생년월일에서 패턴 추출
         if (birthdate) {
@@ -241,6 +320,31 @@ document.addEventListener('DOMContentLoaded', function() {
             // 시+분
             const hourPlusMinute = hour + minute;
             if (hourPlusMinute > 0 && hourPlusMinute <= 45) patterns.push(hourPlusMinute);
+        }
+        
+        // 이름에서 패턴 추출
+        if (name) {
+            // 이름의 각 글자에서 숫자 패턴 추출
+            for (let i = 0; i < name.length; i++) {
+                const charCode = name.charCodeAt(i);
+                // 한글(0xAC00-0xD7A3) 또는 영문(65-122)인 경우에만 처리
+                if ((charCode >= 0xAC00 && charCode <= 0xD7A3) || 
+                    (charCode >= 65 && charCode <= 122)) {
+                    // 유니코드 값을 1-45 사이의 값으로 변환
+                    const patternValue = (charCode % 45) + 1;
+                    patterns.push(patternValue);
+                }
+            }
+        }
+        
+        // 성별에서 패턴 추출
+        if (gender) {
+            // 남자는 홀수 선호, 여자는 짝수 선호
+            if (gender === '남자') {
+                patterns.push(1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41, 43, 45);
+            } else {
+                patterns.push(2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44);
+            }
         }
         
         return [...new Set(patterns)]; // 중복 제거
@@ -286,79 +390,45 @@ document.addEventListener('DOMContentLoaded', function() {
             numbers.filter(n => n >= 41 && n <= 45).length
         ];
         
-        // AC값 (추첨된 번호들의 평균 간격)
-        const acValue = (45 / 6).toFixed(1); // 이론적 AC값
-        const actualAC = ((numbers[numbers.length-1] - numbers[0]) / (numbers.length-1)).toFixed(1);
-        
-        // 번호의 연속성 검사
-        const hasConsecutive = diffs.some(d => d === 1);
-        
-        // 최근 당첨 번호와의 일치 개수 (간단한 예시)
-        const recentWinningNumbers = [3, 7, 12, 24, 31, 45]; // 실제 데이터로 대체 가능
-        const matchCount = numbers.filter(n => recentWinningNumbers.includes(n)).length;
-        
-        // 꿈 내용 표시
-        const dream = dreamInput.value.trim();
-        let dreamAnalysisText = '';
-        
-        if (dream) {
-            dreamAnalysisText = `
-                <div style="margin-top: 10px; padding: 5px; background-color: #fff7e6; border-radius: 5px; border-left: 3px solid #ffb300;">
-                    <p><strong>꿈 내용 반영:</strong> 입력한 꿈 내용이 번호 생성에 반영되었습니다.</p>
-                </div>
-            `;
-        }
-        
         // 표 스타일로 분석 결과 표시
         let analysisHTML = `
-            <div style="margin-top: 20px; text-align: left; padding: 15px; background-color: #f9f9f9; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
-                <h3 style="margin-bottom: 15px; color: #333; border-bottom: 2px solid #ddd; padding-bottom: 8px;">로또 번호 분석</h3>
+            
+            <div class="lotto-analysis">
+                <h3>로또 번호 분석</h3>
                 
-                <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px;">
-                    <tr style="background-color: #f0f0f0;">
-                        <th style="padding: 8px; text-align: left; border-bottom: 1px solid #ddd; width: 50%;">분석 항목</th>
-                        <th style="padding: 8px; text-align: center; border-bottom: 1px solid #ddd; width: 50%;">결과</th>
-                    </tr>
-                    <tr>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee;">합계 (Sum)</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: center;"></td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee;">평균값</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: center;">${avg}</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee;">홀/짝 비율</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: center;">${oddCount}:${evenCount} <span style="color: ${oddCount > 1 && evenCount > 1 ? 'green' : 'gray'}; font-size: 0.8em;">${oddCount > 1 && evenCount > 1 ? '✓ 균형' : ''}</span></td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee;">번호간 평균 간격</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: center;">${avgDiff}</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee;">끝자리 다양성</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: center;">${uniqueLastDigits}/6 <span style="color: ${uniqueLastDigits >= 4 ? 'green' : 'gray'}; font-size: 0.8em;">${uniqueLastDigits >= 4 ? '✓ 다양' : ''}</span></td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee;">AC값 (실제/이론)</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: center;">${actualAC}/${acValue}</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee;">연속된 번호</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: center;">${hasConsecutive ? '있음' : '없음'}</td>
-                    </tr>
-                </table>
-                
-                <div style="margin-top: 15px; margin-bottom: 15px;">
-                    <h4 style="margin-bottom: 8px; font-size: 14px; color: #555;">구간별 분포</h4>
-                    <div style="display: flex; height: 20px; border-radius: 3px; overflow: hidden; margin-top: 5px;">
-                        <div style="width: ${ranges[0]/6*100}%; background-color: #FFB300; height: 100%;" title="1-10: ${ranges[0]}개"></div>
-                        <div style="width: ${ranges[1]/6*100}%; background-color: #29B6F6; height: 100%;" title="11-20: ${ranges[1]}개"></div>
-                        <div style="width: ${ranges[2]/6*100}%; background-color: #EF5350; height: 100%;" title="21-30: ${ranges[2]}개"></div>
-                        <div style="width: ${ranges[3]/6*100}%; background-color: #66BB6A; height: 100%;" title="31-40: ${ranges[3]}개"></div>
-                        <div style="width: ${ranges[4]/6*100}%; background-color: #AB47BC; height: 100%;" title="41-45: ${ranges[4]}개"></div>
+                <div class="analysis-table">
+                    <div class="analysis-row">
+                        <div class="analysis-label">번호 합계</div>
+                        <div class="analysis-value">${sum}</div>
                     </div>
-                    <div style="display: flex; justify-content: space-between; margin-top: 5px; font-size: 12px; color: #777;">
+                    <div class="analysis-row">
+                        <div class="analysis-label">평균값</div>
+                        <div class="analysis-value">${avg}</div>
+                    </div>
+                    <div class="analysis-row">
+                        <div class="analysis-label">홀/짝 비율</div>
+                        <div class="analysis-value">${oddCount}:${evenCount} <span class="${oddCount > 1 && evenCount > 1 ? 'good' : 'neutral'}">${oddCount > 1 && evenCount > 1 ? '✓ 균형' : '균형 부족'}</span></div>
+                    </div>
+                    <div class="analysis-row">
+                        <div class="analysis-label">번호간 평균 간격</div>
+                        <div class="analysis-value">${avgDiff}</div>
+                    </div>
+                    <div class="analysis-row">
+                        <div class="analysis-label">끝자리 다양성</div>
+                        <div class="analysis-value">${uniqueLastDigits}/6 <span class="${uniqueLastDigits >= 4 ? 'good' : 'neutral'}">${uniqueLastDigits >= 4 ? '✓ 다양' : '다양성 부족'}</span></div>
+                    </div>
+                </div>
+                
+                <div class="number-distribution">
+                    <h4>번호 구간별 분포</h4>
+                    <div class="distribution-bar">
+                        <div class="dist-1-10" style="width: ${ranges[0]/6*100}%" title="1-10: ${ranges[0]}개"></div>
+                        <div class="dist-11-20" style="width: ${ranges[1]/6*100}%" title="11-20: ${ranges[1]}개"></div>
+                        <div class="dist-21-30" style="width: ${ranges[2]/6*100}%" title="21-30: ${ranges[2]}개"></div>
+                        <div class="dist-31-40" style="width: ${ranges[3]/6*100}%" title="31-40: ${ranges[3]}개"></div>
+                        <div class="dist-41-45" style="width: ${ranges[4]/6*100}%" title="41-45: ${ranges[4]}개"></div>
+                    </div>
+                    <div class="distribution-labels">
                         <span>1-10 (${ranges[0]})</span>
                         <span>11-20 (${ranges[1]})</span>
                         <span>21-30 (${ranges[2]})</span>
@@ -366,7 +436,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         <span>41-45 (${ranges[4]})</span>
                     </div>
                 </div>
-                ${dreamAnalysisText}
             </div>
         `;
         
@@ -457,11 +526,58 @@ document.addEventListener('DOMContentLoaded', function() {
         numberAnalysisElement.innerHTML = '';
     }
 
+    // 결과 메시지 생성 함수 
+    function generateResultMessage(name, gender, birthdate) {
+        if (!name || !birthdate) return "생년월일과 이름을 입력하시면 더 정확한 분석이 가능합니다.";
+        
+        const day = parseInt(birthdate.slice(6, 8));
+        const month = parseInt(birthdate.slice(4, 6));
+        const year = parseInt(birthdate.slice(0, 4));
+        
+        const messages = [
+            `${name}님의 사주를 분석한 결과, 이번 주는 행운이 따르는 주간입니다.`,
+            `${month}월 생인 ${name}님은 물과 관련된 숫자에 행운이 있습니다.`,
+            `태어난 해(${year}년)의 영향으로 발전과 성장의 기운이 느껴집니다.`,
+            `${gender === '남자' ? '양' : '음'}의 기운이 강하게 나타나 직관력이 뛰어난 시기입니다.`,
+            `천간과 지지의 조합이 ${name}님에게 긍정적인 에너지를 줍니다.`,
+            `오행의 균형이 잘 맞아 안정감 있는 운세를 보여줍니다.`
+        ];
+        
+        // 생일 날짜에 따라 메시지 선택
+        const messageIndex = day % messages.length;
+        return messages[messageIndex];
+    }
+    
+    // 꿈 해몽 분석 함수
+    function analyzeDream(dream) {
+        if (!dream) return "";
+        
+        const keywords = {
+            '돈': '재물운이 상승하고 있습니다. 투자에 좋은 시기입니다.',
+            '물': '감정의 흐름이 원활해지고 새로운 기회가 찾아올 수 있습니다.',
+            '산': '성취와 목표 달성을 암시합니다. 도전적인 일을 시작하기 좋은 시기입니다.',
+            '불': '열정과 에너지가 넘치는 시기입니다. 새로운 시작에 좋습니다.',
+            '집': '안정과 보호를 상징합니다. 가정에 행복한 일이, 생길 수 있습니다.',
+            '차': '인생의 방향성과 관련이 있습니다. 새로운 도전을 앞두고 있을 수 있습니다.',
+            '사람': '대인관계에 변화가 있을 수 있습니다. 새로운 만남에 주목하세요.'
+        };
+        
+        for (const [key, value] of Object.entries(keywords)) {
+            if (dream.includes(key)) {
+                return value;
+            }
+        }
+        
+        return "꿈에서 특별한 의미를 찾을 수 없습니다. 하지만 직관을 믿는 것이 도움이 될 수 있습니다.";
+    }
+
     // 번호 생성 버튼 이벤트 핸들러
     generateBtn.addEventListener('click', function() {
         const birthdate = birthdateInput.value.trim();
         const birthtime = birthtimeInput.value.trim();
         const dream = dreamInput.value.trim();
+        const name = nameInput.value.trim();
+        const gender = genderSelect.value;
         
         if (!birthdate) {
             alert('생년월일을 입력해주세요!');

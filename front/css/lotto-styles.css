@@ -1,55 +1,312 @@
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Arial', sans-serif; }
-body { background-color: #f5f5f5; min-height: 100vh; padding: 20px; }
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Noto Sans KR', sans-serif; }
+body { 
+    background-color: #f7f7f7; 
+    min-height: 100vh; 
+    padding: 0; 
+    color: #333;
+    font-size: 14px;
+}
 
 .page-container {
     width: 100%;
-    max-width: 1200px;
+    max-width: 1000px;
     margin: 0 auto;
     display: grid;
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 15px;
 }
 
 @media (min-width: 1024px) {
     .page-container {
-        grid-template-columns: 160px 1fr 160px;
+        grid-template-columns: 140px 1fr 140px;
     }
 }
 
 .main-container {
     display: flex;
     justify-content: center;
+    margin-top: 15px;
 }
 
 .container { 
     background-color: white; 
-    border-radius: 10px; 
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); 
+    border-radius: 8px; 
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); 
     width: 100%; 
-    max-width: 500px; 
-    padding: 30px; 
+    max-width: 720px; 
+    padding: 0;
     text-align: center; 
+    overflow: hidden;
 }
 
-h1 { color: #333; margin-bottom: 20px; }
-.today-date { font-size: 18px; color: #666; margin-bottom: 15px; }
-.next-update { font-size: 14px; color: #888; margin-bottom: 25px; }
-.numbers-container { display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; margin: 30px 0; }
-.number { width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 20px; font-weight: bold; color: white; transition: transform 0.3s ease; }
-.number:hover { transform: scale(1.1); }
-.history { margin-top: 30px; text-align: left; max-height: 200px; overflow-y: auto; border-top: 1px solid #eee; padding-top: 15px; }
-.history-item { padding: 8px 0; border-bottom: 1px solid #f0f0f0; }
-.history-numbers { display: flex; gap: 5px; margin-top: 5px; }
-.history-number { width: 25px; height: 25px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 12px; color: white; }
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #6553C1;
+    padding: 12px 15px;
+}
+
+.logo-image {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+}
+
+h1 { 
+    color: white;
+    margin: 0;
+    font-size: 20px;
+    line-height: 1.2;
+}
+
+.today-date { 
+    font-size: 14px; 
+    color: #666; 
+    margin: 12px 0 4px; 
+}
+
+.next-update { 
+    font-size: 12px; 
+    color: #888; 
+    margin-bottom: 15px; 
+}
+
+.input-container {
+    margin: 0;
+    padding: 15px 20px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.input-group {
+    margin-bottom: 12px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 500;
+    color: #555;
+    font-size: 13px;
+}
+
+.input-group input, .input-group textarea, .input-group select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    font-size: 13px;
+}
+
+.input-group select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'%3E%3Cpath fill='%23888' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+}
+
+.input-group textarea {
+    height: 60px;
+    resize: vertical;
+}
+
+.generate-btn {
+    background-color: #6553C1;
+    color: white;
+    border: none;
+    padding: 10px 0;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.3s;
+    width: 100%;
+    font-size: 14px;
+    margin-top: 8px;
+}
+
+.generate-btn:hover {
+    background-color: #5344a9;
+}
+
+.numbers-container { 
+    display: flex; 
+    justify-content: center; 
+    flex-wrap: wrap; 
+    gap: 12px; 
+    margin: 20px auto;
+    padding: 0 15px;
+}
+
+.number { 
+    width: 50px; 
+    height: 50px; 
+    border-radius: 50%; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    font-size: 18px; 
+    font-weight: bold; 
+    color: white; 
+    transition: transform 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.number:hover { 
+    transform: scale(1.05); 
+}
+
 .num-1-10 { background-color: #FFB300; }
 .num-11-20 { background-color: #29B6F6; }
 .num-21-30 { background-color: #EF5350; }
 .num-31-40 { background-color: #66BB6A; }
 .num-41-45 { background-color: #AB47BC; }
 
+.number-analysis {
+    padding: 0 20px 20px;
+}
+
+/* 운세 결과 스타일 */
+.fortune-result {
+    background-color: #f9f9f9;
+    border-radius: 6px;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-left: 3px solid #6553C1;
+}
+
+.fortune-result h3 {
+    color: #6553C1;
+    margin-bottom: 10px;
+    font-size: 16px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+}
+
+.fortune-result p {
+    line-height: 1.5;
+    color: #555;
+    font-size: 13px;
+}
+
+/* 로또 분석 스타일 */
+.lotto-analysis {
+    background-color: white;
+    border-radius: 6px;
+    padding: 15px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.lotto-analysis h3 {
+    color: #333;
+    margin-bottom: 12px;
+    font-size: 16px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+}
+
+.analysis-table {
+    margin-bottom: 15px;
+}
+
+.analysis-row {
+    display: flex;
+    border-bottom: 1px solid #f0f0f0;
+    padding: 8px 0;
+}
+
+.analysis-label {
+    flex: 1;
+    font-weight: 500;
+    color: #555;
+    font-size: 13px;
+}
+
+.analysis-value {
+    flex: 1;
+    text-align: right;
+    color: #333;
+    font-size: 13px;
+}
+
+.analysis-value .good {
+    color: #6553C1;
+    font-weight: 500;
+    font-size: 0.9em;
+    margin-left: 5px;
+}
+
+.analysis-value .neutral {
+    color: #999;
+    font-size: 0.9em;
+    margin-left: 5px;
+}
+
+.number-distribution {
+    margin: 15px 0;
+}
+
+.number-distribution h4 {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 8px;
+}
+
+.distribution-bar {
+    display: flex;
+    height: 20px;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.distribution-bar div {
+    height: 100%;
+}
+
+.dist-1-10 { background-color: #FFB300; }
+.dist-11-20 { background-color: #29B6F6; }
+.dist-21-30 { background-color: #EF5350; }
+.dist-31-40 { background-color: #66BB6A; }
+.dist-41-45 { background-color: #AB47BC; }
+
+.distribution-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #777;
+}
+
+/* 꿈 해몽 분석 스타일 */
+.dream-analysis {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    padding: 12px;
+    background-color: #fff7e6;
+    border-radius: 4px;
+    border-left: 3px solid #ffb300;
+}
+
+.dream-analysis h3 {
+    color: #d9940f;
+    margin-bottom: 8px;
+    font-size: 14px;
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.dream-analysis p {
+    color: #555;
+    line-height: 1.4;
+    font-size: 13px;
+}
+
 .ad-container {
     width: 100%;
-    margin: 20px auto;
+    margin: 15px auto;
     text-align: center;
     overflow: hidden;
 }
@@ -62,7 +319,7 @@ h1 { color: #333; margin-bottom: 20px; }
 .ad-bottom {
     width: 100%;
     max-width: 728px;
-    margin: 20px auto;
+    margin: 15px auto;
 }
 
 @media (max-width: 1023px) {
@@ -71,39 +328,33 @@ h1 { color: #333; margin-bottom: 20px; }
     }
 }
 
-.input-container {
-    margin-bottom: 20px;
+/* 사주 스타일 추가 */
+.bon-section {
+    background-color: white;
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.bon-section h2 {
+    font-size: 16px;
+    margin-bottom: 12px;
     text-align: left;
+    color: #333;
 }
-.input-group {
-    margin-bottom: 10px;
+
+.bon-input {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
 }
-.input-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-    color: #555;
+
+@media (min-width: 768px) {
+    .bon-input {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
 }
-.input-group input, .input-group textarea {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-}
-.input-group textarea {
-    height: 80px;
-    resize: vertical;
-}
-.generate-btn {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s;
-}
-.generate-btn:hover {
-    background-color: #45a049;
-} 
+
+.history { margin-top: 20px; text-align: left; max-height: 180px; overflow-y: auto; border-top: 1px solid #eee; padding-top: 12px; }
+.history-item { padding: 6px 0; border-bottom: 1px solid #f0f0f0; }
+.history-numbers { display: flex; gap: 4px; margin-top: 4px; }
+.history-number { width: 22px; height: 22px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 11px; color: white; } 
