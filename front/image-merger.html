@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이미지 병합 사이트 - 무료 온라인 이미지 합치기 툴</title>
+    <meta name="description" content="이미지를 병합하는 최고의 무료 온라인 사이트입니다. 간단한 클릭 몇 번으로 여러 이미지를 하나로 합치세요. SNS, 블로그, 마케팅 콘텐츠 제작에 최적화된 이미지 병합 서비스를 지금 이용해보세요!">
+    <meta name="keywords" content="이미지 병합, 사진 합치기, 이미지 콜라주, 무료 이미지 합치기, 온라인 이미지 병합">
+    <meta name="author" content="이미지 병합 사이트">
+    <meta property="og:title" content="이미지 병합 사이트 - 무료 온라인 이미지 합치기 툴">
+    <meta property="og:description" content="이미지를 병합하는 최고의 무료 온라인 사이트입니다. 간단한 클릭 몇 번으로 여러 이미지를 하나로 합치세요.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.이미지병합사이트.com">
+    <meta property="og:image" content="https://www.이미지병합사이트.com/images/og-image.jpg">
+    <link rel="canonical" href="https://www.이미지병합사이트.com">
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <script id="adsbygoogle-init" strategy="afterInteractive"
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4166816153257661"
+        crossOrigin="anonymous"></script>
+    <script id="adsbygoogle-config" strategy="afterInteractive" dangerouslySetInnerHTML={{ __html: `
+        (adsbygoogle=window.adsbygoogle || []).push({ google_ad_client: "ca-pub-4166816153257661" ,
+        enable_page_level_ads: true, overlays: {bottom: true} }); `, }}></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-images"></i> 이미지 병합 사이트</h1>
+            <p>이미지를 업로드하고 다양한 옵션으로 병합하세요!</p>
+        </header>
+
+        <main>
+
+            <section class="upload-section">
+                <h2>이미지 업로드</h2>
+                <div class="upload-area" id="upload-area">
+                    <div class="upload-prompt">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>이미지를 드래그&드롭하거나 클릭하여 업로드</p>
+                        <p class="upload-info">최대 100개 이미지, 각 32MB 이하</p>
+                        <p class="upload-formats">지원 형식: JPG, PNG, GIF, WEBP</p>
+                    </div>
+                    <input type="file" id="file-input" multiple accept="image/*" style="display: none;">
+                </div>
+                <button class="btn primary" id="add-files-btn"><i class="fas fa-plus"></i> 파일 추가</button>
+            </section>
+
+            <section class="example-section">
+                <h2>이미지 병합 예시</h2>
+                <div class="example-container">
+                    <img src="images/example-image.svg" alt="이미지 병합 예시" class="example-image">
+                    <div class="example-description">
+                        <p>별도의 프로그램 설치 없이 간단한 조작으로 여러 이미지를 한 번에 병합할 수 있습니다.</p>
+                        <p>세로, 가로, 그리드 등 다양한 레이아웃으로 이미지를 조합해보세요!</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="preview-section" class="preview-section hidden">
+                <h2>이미지 미리보기 및 설정</h2>
+                <div class="control-bar">
+                    <button class="btn" id="select-all-btn"><i class="fas fa-check-square"></i> 전체 선택</button>
+                    <button class="btn danger" id="remove-selected-btn"><i class="fas fa-trash"></i> 선택 삭제</button>
+                    <div class="sort-controls">
+                        <button class="btn" id="move-up-btn"><i class="fas fa-arrow-up"></i></button>
+                        <button class="btn" id="move-down-btn"><i class="fas fa-arrow-down"></i></button>
+                    </div>
+                </div>
+
+                <div class="images-container" id="images-container">
+                    <!-- 업로드된 이미지가 여기에 표시됩니다 -->
+                </div>
+            </section>
+
+            <section id="merge-section" class="merge-section">
+                <h2>병합 설정</h2>
+                <div class="merge-options">
+                    <div class="option-group">
+                        <label for="merge-direction">병합 방향:</label>
+                        <select id="merge-direction" class="form-control">
+                            <option value="vertical">세로 방향</option>
+                            <option value="horizontal">가로 방향</option>
+                            <option value="horizontal_2x">가로 2개씩</option>
+                        </select>
+                    </div>
+
+                    <div class="option-group">
+                        <label for="image-spacing">이미지 간격 (px):</label>
+                        <input type="number" id="image-spacing" class="form-control" value="6" min="0" max="100">
+                    </div>
+
+                    <div class="option-group">
+                        <label for="alignment">정렬:</label>
+                        <select id="alignment" class="form-control">
+                            <option value="left">왼쪽</option>
+                            <option value="center">가운데</option>
+                            <option value="right">오른쪽</option>
+                        </select>
+                    </div>
+
+                    <div class="option-group" id="target-width-group">
+                        <label for="target-width">최대 폭 (px):</label>
+                        <input type="number" id="target-width" class="form-control" value="550" min="100" max="5000">
+                    </div>
+
+                    <div class="option-group hidden" id="target-height-group">
+                        <label for="target-height">최대 높이 (px):</label>
+                        <input type="number" id="target-height" class="form-control" value="800" min="100" max="5000">
+                    </div>
+
+                    <div class="option-group">
+                        <label for="border-color">테두리 색상:</label>
+                        <input type="color" id="border-color" class="form-control color-input" value="#cccccc">
+                        <button class="btn small" id="no-border-btn">테두리 없음</button>
+                    </div>
+
+                    <div class="option-group">
+                        <label for="border-width">테두리 두께 (px):</label>
+                        <input type="number" id="border-width" class="form-control" value="1" min="1" max="10">
+                    </div>
+
+                    <div class="option-group">
+                        <label for="output-format">출력 형식:</label>
+                        <select id="output-format" class="form-control">
+                            <option value="PNG">PNG</option>
+                            <option value="JPEG">JPEG</option>
+                            <option value="GIF">GIF</option>
+                            <option value="WEBP">WEBP</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="merge-actions">
+                    <button class="btn primary" id="start-merge-btn"><i class="fas fa-object-group"></i> 이미지 병합</button>
+                </div>
+            </section>
+
+            <section id="result-section" class="result-section hidden">
+                <h2>병합 결과</h2>
+                <div class="result-container">
+                    <div class="result-image-container">
+                        <img id="result-image" alt="병합된 이미지">
+                    </div>
+                    <div class="result-actions">
+                        <button class="btn primary" id="download-btn"><i class="fas fa-download"></i> 다운로드</button>
+                        <button class="btn" id="new-merge-btn"><i class="fas fa-redo"></i> 새로 시작</button>
+                    </div>
+                    <div class="expiration-notice">
+                        <p><i class="fas fa-clock"></i> 이 이미지는 30분 후 자동으로 삭제됩니다.</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <div id="loading-overlay" class="hidden">
+            <div class="loading-spinner"></div>
+            <p>이미지 처리 중...</p>
+        </div>
+
+        <section class="seo-section">
+            <div class="seo-container">
+                <h2><i class="fas fa-search"></i> 이미지 병합의 모든 것</h2>
+                
+                <div class="seo-content">
+                    <div class="seo-intro">
+                        <h3>이미지를 병합하는 최고의 무료 온라인 사이트를 찾고 계신가요?</h3>
+                        <p>현대 디지털 시대에는 수많은 사람들이 사진이나 그림을 병합하여 새로운 창의적 콘텐츠를 제작하고자 합니다. 이미지 병합은 디자인 작업, SNS 콘텐츠 제작, 마케팅 자료, 개인 블로그 등 다양한 분야에서 필수적으로 활용되고 있습니다. 이제는 복잡한 소프트웨어 설치 없이도 간편하게 이미지를 병합할 수 있는 웹사이트가 각광받고 있습니다.</p>
+                        <p>저희 사이트는 사용자가 원하는 이미지들을 간단한 클릭 몇 번만으로 하나의 완성된 이미지로 합쳐주는 무료 온라인 서비스입니다. 쉽고 빠르며 직관적인 인터페이스로 초보자도 쉽게 접근할 수 있어 누구나 손쉽게 사용할 수 있습니다.</p>
+                    </div>
+
+                    <div class="seo-advantages">
+                        <h3><i class="fas fa-star"></i> 이미지 병합의 장점은 무엇일까요?</h3>
+                        <div class="advantage-item">
+                            <div class="advantage-icon"><i class="fas fa-palette"></i></div>
+                            <div class="advantage-text">
+                                <h4>다양한 시각적 콘텐츠 생성</h4>
+                                <p>이미지 병합을 통해 다양한 시각적 콘텐츠를 생성할 수 있습니다. 예를 들어, 여러 사진을 결합하여 감각적인 콜라주를 만들거나, 두 가지 이상의 그래픽을 융합하여 새로운 예술 작품을 창조할 수 있습니다. SNS 인플루언서들은 이미지 병합을 통해 더욱 눈에 띄는 피드를 만들어 팔로워들과의 소통을 강화하기도 합니다.</p>
+                            </div>
+                        </div>
+                        <div class="advantage-item">
+                            <div class="advantage-icon"><i class="fas fa-bullhorn"></i></div>
+                            <div class="advantage-text">
+                                <h4>강력한 메시지 전달</h4>
+                                <p>병합된 이미지는 전달하고자 하는 메시지를 더 강력하게 만듭니다. 여러 이미지를 병합해 하나의 콘텐츠로 제작하면, 각 이미지가 갖는 메시지를 조화롭게 통합하여 시각적 임팩트를 높일 수 있습니다. 특히 마케팅 자료로 활용할 때 고객들의 이목을 집중시키는 효과를 얻을 수 있습니다.</p>
+                            </div>
+                        </div>
+                        <div class="advantage-item">
+                            <div class="advantage-icon"><i class="fas fa-book-open"></i></div>
+                            <div class="advantage-text">
+                                <h4>뛰어난 스토리텔링 효과</h4>
+                                <p>이미지 병합은 스토리텔링에 뛰어난 효과를 발휘합니다. 여행, 결혼식, 생일파티 등 의미 있는 순간의 다양한 이미지를 병합하여 하나의 이야기로 전달할 수 있으며, 감정을 더 깊이 있게 전달하는 데 도움을 줍니다.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="seo-how-to">
+                        <h3><i class="fas fa-question-circle"></i> 이미지 병합을 하는 방법은 무엇인가요?</h3>
+                        <p>저희 웹사이트에서는 이미지를 간단하게 업로드한 후, 원하는 배치 및 레이아웃을 선택하여 빠르게 병합할 수 있습니다. 복잡한 설정이나 프로그램을 다룰 필요 없이, 단 몇 초만에 고화질의 병합된 이미지를 얻을 수 있습니다. 또한 PNG, JPG, GIF 등 다양한 이미지 포맷을 지원하므로 사용자는 자신이 보유한 다양한 형식의 이미지를 자유롭게 병합할 수 있습니다.</p>
+                        
+                        <div class="steps-container">
+                            <div class="step-item">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <h4>이미지 업로드</h4>
+                                    <p>파일을 드래그&드롭하거나 파일 선택 버튼을 클릭하여 병합할 이미지를 업로드합니다</p>
+                                </div>
+                            </div>
+                            <div class="step-item">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <h4>병합 설정 선택</h4>
+                                    <p>가로/세로 배치, 간격, 테두리 등 원하는 병합 옵션을 설정합니다</p>
+                                </div>
+                            </div>
+                            <div class="step-item">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <h4>병합 및 다운로드</h4>
+                                    <p>이미지 병합 버튼을 클릭하고 결과물을 확인한 후 다운로드합니다</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="seo-tips">
+                        <h3><i class="fas fa-lightbulb"></i> 이미지를 병합할 때 주의해야 할 점은?</h3>
+                        <p>고화질의 결과물을 얻기 위해 원본 이미지의 해상도가 높을수록 좋습니다. 또한, 이미지의 색상 톤과 스타일을 일치시키면 더욱 자연스러운 병합 결과를 얻을 수 있습니다. 저희 사이트는 사용자의 편의성을 고려하여 자동 색상 보정 기능도 지원하고 있습니다.</p>
+                    </div>
+
+                    <div class="seo-applications">
+                        <h3><i class="fas fa-briefcase"></i> 이미지 병합의 활용 분야는 무궁무진합니다</h3>
+                        <div class="applications-grid">
+                            <div class="application-item">
+                                <div class="application-icon"><i class="fas fa-hashtag"></i></div>
+                                <p>SNS 마케팅 콘텐츠 제작</p>
+                            </div>
+                            <div class="application-item">
+                                <div class="application-icon"><i class="fas fa-blog"></i></div>
+                                <p>블로그 및 웹사이트 콘텐츠 강화</p>
+                            </div>
+                            <div class="application-item">
+                                <div class="application-icon"><i class="fas fa-chart-bar"></i></div>
+                                <p>프레젠테이션 및 보고서 시각화</p>
+                            </div>
+                            <div class="application-item">
+                                <div class="application-icon"><i class="fas fa-images"></i></div>
+                                <p>개인 사진 앨범 제작</p>
+                            </div>
+                            <div class="application-item">
+                                <div class="application-icon"><i class="fas fa-paint-brush"></i></div>
+                                <p>예술적이고 창의적인 작품 제작</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="seo-conclusion">
+                        <h3>이미지 병합 서비스를 찾는다면, 저희 웹사이트를 통해 지금 바로 쉽고 빠르게 이미지를 병합하여 여러분의 창의성을 마음껏 표현해 보세요!</h3>
+                        <div class="cta-button">
+                            <a href="#upload-area" class="btn primary"><i class="fas fa-rocket"></i> 지금 바로 이미지 병합하기</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p>© 2025 이미지 병합 사이트 | 개인정보는 30분 내에 자동으로 삭제됩니다.</p>
+        </footer>
+    </div>
+
+    <!-- 이미지 아이템 템플릿 -->
+    <template id="image-item-template">
+        <div class="image-item">
+            <div class="image-preview">
+                <img src="" alt="이미지 미리보기">
+            </div>
+            <div class="image-controls">
+                <div class="control-group">
+                    <label for="rotation">회전:</label>
+                    <select class="rotation form-control">
+                        <option value="0">0°</option>
+                        <option value="90">90°</option>
+                        <option value="180">180°</option>
+                        <option value="270">270°</option>
+                    </select>
+                </div>
+                <button class="btn danger remove-btn"><i class="fas fa-times"></i></button>
+            </div>
+        </div>
+    </template>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
