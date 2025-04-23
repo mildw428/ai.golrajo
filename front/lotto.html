@@ -8,7 +8,7 @@
         crossOrigin="anonymous" async></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Arial', sans-serif; }
-        body { background-color: #f0f0f5; min-height: 100vh; padding: 20px; }
+        body { background-color: #f5f5f5; min-height: 100vh; padding: 20px; }
         
         .page-container {
             width: 100%;
@@ -17,7 +17,6 @@
             display: grid;
             grid-template-columns: 1fr;
             gap: 20px;
-            position: relative;
         }
         
         @media (min-width: 1024px) {
@@ -34,51 +33,28 @@
         .container { 
             background-color: white; 
             border-radius: 10px; 
-            box-shadow: 0 5px 15px rgba(68, 57, 172, 0.15); 
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); 
             width: 100%; 
             max-width: 500px; 
             padding: 30px; 
             text-align: center; 
-            position: relative;
-            z-index: 1;
         }
         
-        /* 부채 스타일 */
-        .fan {
-            position: absolute;
-            width: 300px;
-            height: 150px;
-            z-index: 0;
-            opacity: 0.2;
-        }
-        
-        .fan-top-left {
-            top: 50px;
-            left: -50px;
-            transform: rotate(-30deg);
-        }
-        
-        .fan-bottom-right {
-            bottom: 50px;
-            right: -50px;
-            transform: rotate(150deg);
-        }
-        
-        h1 { color: #4439AC; margin-bottom: 20px; }
-        .today-date { font-size: 18px; color: #5c52c7; margin-bottom: 15px; }
-        .next-update { font-size: 14px; color: #7e76d9; margin-bottom: 25px; }
+        h1 { color: #333; margin-bottom: 20px; }
+        .today-date { font-size: 18px; color: #666; margin-bottom: 15px; }
+        .next-update { font-size: 14px; color: #888; margin-bottom: 25px; }
         .numbers-container { display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; margin: 30px 0; }
-        .number { width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 20px; font-weight: bold; color: white; transition: transform 0.3s ease; box-shadow: 0 3px 5px rgba(0,0,0,0.1); }
+        .number { width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 20px; font-weight: bold; color: white; transition: transform 0.3s ease; }
         .number:hover { transform: scale(1.1); }
         .history { margin-top: 30px; text-align: left; max-height: 200px; overflow-y: auto; border-top: 1px solid #eee; padding-top: 15px; }
         .history-item { padding: 8px 0; border-bottom: 1px solid #f0f0f0; }
         .history-numbers { display: flex; gap: 5px; margin-top: 5px; }
         .history-number { width: 25px; height: 25px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 12px; color: white; }
-        .num-1-10 { background-color: #5c52c7; }
-        .num-11-20 { background-color: #4439AC; }
-        .num-21-30 { background-color: #6f66d6; }
-        .num-31-40 { background-color: #3f34a7; }
-        .num-41-45 { background-color: #524bbc; }
+        .num-1-10 { background-color: #FFB300; }
+        .num-11-20 { background-color: #29B6F6; }
+        .num-21-30 { background-color: #EF5350; }
+        .num-31-40 { background-color: #66BB6A; }
+        .num-41-45 { background-color: #AB47BC; }
         
         .ad-container {
             width: 100%;
@@ -115,69 +91,35 @@
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
-            color: #4439AC;
+            color: #555;
         }
         .input-group input, .input-group textarea {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #d1d0e7;
+            padding: 8px;
+            border: 1px solid #ddd;
             border-radius: 5px;
-            transition: border-color 0.3s;
-        }
-        .input-group input:focus, .input-group textarea:focus {
-            outline: none;
-            border-color: #4439AC;
-            box-shadow: 0 0 0 3px rgba(68, 57, 172, 0.2);
         }
         .input-group textarea {
             height: 80px;
             resize: vertical;
         }
         .generate-btn {
-            background-color: #4439AC;
+            background-color: #4CAF50;
             color: white;
             border: none;
-            padding: 12px 25px;
-            border-radius: 25px;
+            padding: 10px 20px;
+            border-radius: 5px;
             cursor: pointer;
             font-weight: bold;
-            transition: all 0.3s;
-            box-shadow: 0 3px 6px rgba(68, 57, 172, 0.3);
+            transition: background-color 0.3s;
         }
         .generate-btn:hover {
-            background-color: #3a319c;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 10px rgba(68, 57, 172, 0.4);
+            background-color: #45a049;
         }
     </style>
 </head>
 <body>
     <div class="page-container">
-        <!-- 부채 이미지 SVG -->
-        <svg class="fan fan-top-left" viewBox="0 0 300 150" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-                <linearGradient id="fanGradient1" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" style="stop-color:#4439AC;stop-opacity:1" />
-                    <stop offset="100%" style="stop-color:#6f66d6;stop-opacity:1" />
-                </linearGradient>
-            </defs>
-            <path d="M150,150 Q 150,0 0,0 Q 150,0 300,0 Q 150,0 150,150 Z" fill="url(#fanGradient1)" />
-            <circle cx="150" cy="150" r="5" fill="#4439AC" />
-            <path d="M150,150 L 130,100 M150,150 L 170,100 M150,150 L 100,80 M150,150 L 200,80 M150,150 L 75,60 M150,150 L 225,60 M150,150 L 50,40 M150,150 L 250,40 M150,150 L 25,25 M150,150 L 275,25" stroke="#4439AC" stroke-width="1" opacity="0.8" />
-        </svg>
-        
-        <svg class="fan fan-bottom-right" viewBox="0 0 300 150" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-                <linearGradient id="fanGradient2" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" style="stop-color:#5c52c7;stop-opacity:1" />
-                    <stop offset="100%" style="stop-color:#7e76d9;stop-opacity:1" />
-                </linearGradient>
-            </defs>
-            <path d="M150,150 Q 150,0 0,0 Q 150,0 300,0 Q 150,0 150,150 Z" fill="url(#fanGradient2)" />
-            <circle cx="150" cy="150" r="5" fill="#5c52c7" />
-            <path d="M150,150 L 130,100 M150,150 L 170,100 M150,150 L 100,80 M150,150 L 200,80 M150,150 L 75,60 M150,150 L 225,60 M150,150 L 50,40 M150,150 L 250,40 M150,150 L 25,25 M150,150 L 275,25" stroke="#5c52c7" stroke-width="1" opacity="0.8" />
-        </svg>
-        
         <div class="left-sidebar">
             <div class="ad-sidebar">
                 <!-- 좌측 배너 광고 -->
@@ -195,12 +137,6 @@
         
         <div class="main-container">
             <div class="container">
-                <!-- 상단 부채 아이콘 -->
-                <svg width="40" height="40" viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 15px;">
-                    <path d="M50,50 Q 50,10 10,10 Q 50,10 90,10 Q 50,10 50,50 Z" fill="#4439AC" />
-                    <circle cx="50" cy="50" r="3" fill="#f0f0f5" />
-                </svg>
-                
                 <h1>이번주 AI 로또번호</h1>
                 <div class="today-date" id="todayDate"></div>
                 <div class="next-update" id="nextUpdate"></div>
@@ -223,12 +159,6 @@
                 
                 <div class="numbers-container" id="numbers"></div>
                 <div class="number-analysis" id="numberAnalysis"></div>
-                
-                <!-- 하단 부채 아이콘 -->
-                <svg width="30" height="30" viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg" style="margin-top: 15px; opacity: 0.7;">
-                    <path d="M50,50 Q 50,10 10,10 Q 50,10 90,10 Q 50,10 50,50 Z" fill="#5c52c7" />
-                    <circle cx="50" cy="50" r="3" fill="#f0f0f5" />
-                </svg>
             </div>
         </div>
         
@@ -567,62 +497,62 @@
                 
                 if (dream) {
                     dreamAnalysisText = `
-                        <div style="margin-top: 10px; padding: 8px; background-color: #efeeff; border-radius: 8px; border-left: 3px solid #4439AC;">
-                            <p><strong style="color: #4439AC;">꿈 내용 반영:</strong> <span style="color: #555;">입력한 꿈 내용이 번호 생성에 반영되었습니다.</span></p>
+                        <div style="margin-top: 10px; padding: 5px; background-color: #fff7e6; border-radius: 5px; border-left: 3px solid #ffb300;">
+                            <p><strong>꿈 내용 반영:</strong> 입력한 꿈 내용이 번호 생성에 반영되었습니다.</p>
                         </div>
                     `;
                 }
                 
                 // 표 스타일로 분석 결과 표시
                 let analysisHTML = `
-                    <div style="margin-top: 20px; text-align: left; padding: 20px; background-color: #f7f7fc; border-radius: 12px; box-shadow: 0 3px 8px rgba(68, 57, 172, 0.1);">
-                        <h3 style="margin-bottom: 15px; color: #4439AC; border-bottom: 2px solid #d1d0e7; padding-bottom: 8px;">로또 번호 분석</h3>
+                    <div style="margin-top: 20px; text-align: left; padding: 15px; background-color: #f9f9f9; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                        <h3 style="margin-bottom: 15px; color: #333; border-bottom: 2px solid #ddd; padding-bottom: 8px;">로또 번호 분석</h3>
                         
                         <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px;">
-                            <tr style="background-color: #efeeff;">
-                                <th style="padding: 10px; text-align: left; border-bottom: 1px solid #d1d0e7; width: 50%; color: #4439AC;">분석 항목</th>
-                                <th style="padding: 10px; text-align: center; border-bottom: 1px solid #d1d0e7; width: 50%; color: #4439AC;">결과</th>
+                            <tr style="background-color: #f0f0f0;">
+                                <th style="padding: 8px; text-align: left; border-bottom: 1px solid #ddd; width: 50%;">분석 항목</th>
+                                <th style="padding: 8px; text-align: center; border-bottom: 1px solid #ddd; width: 50%;">결과</th>
                             </tr>
                             <tr>
-                                <td style="padding: 10px; border-bottom: 1px solid #e6e5f5;">합계 (Sum)</td>
-                                <td style="padding: 10px; border-bottom: 1px solid #e6e5f5; text-align: center;">${sum} <span style="color: ${sum > 100 && sum < 170 ? '#4439AC' : 'gray'}; font-size: 0.8em;">${sum > 100 && sum < 170 ? '✓ 적정' : ''}</span></td>
+                                <td style="padding: 8px; border-bottom: 1px solid #eee;">합계 (Sum)</td>
+                                <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: center;"></td>
                             </tr>
                             <tr>
-                                <td style="padding: 10px; border-bottom: 1px solid #e6e5f5;">평균값</td>
-                                <td style="padding: 10px; border-bottom: 1px solid #e6e5f5; text-align: center;">${avg}</td>
+                                <td style="padding: 8px; border-bottom: 1px solid #eee;">평균값</td>
+                                <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: center;">${avg}</td>
                             </tr>
                             <tr>
-                                <td style="padding: 10px; border-bottom: 1px solid #e6e5f5;">홀/짝 비율</td>
-                                <td style="padding: 10px; border-bottom: 1px solid #e6e5f5; text-align: center;">${oddCount}:${evenCount} <span style="color: ${oddCount > 1 && evenCount > 1 ? '#4439AC' : 'gray'}; font-size: 0.8em;">${oddCount > 1 && evenCount > 1 ? '✓ 균형' : ''}</span></td>
+                                <td style="padding: 8px; border-bottom: 1px solid #eee;">홀/짝 비율</td>
+                                <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: center;">${oddCount}:${evenCount} <span style="color: ${oddCount > 1 && evenCount > 1 ? 'green' : 'gray'}; font-size: 0.8em;">${oddCount > 1 && evenCount > 1 ? '✓ 균형' : ''}</span></td>
                             </tr>
                             <tr>
-                                <td style="padding: 10px; border-bottom: 1px solid #e6e5f5;">번호간 평균 간격</td>
-                                <td style="padding: 10px; border-bottom: 1px solid #e6e5f5; text-align: center;">${avgDiff}</td>
+                                <td style="padding: 8px; border-bottom: 1px solid #eee;">번호간 평균 간격</td>
+                                <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: center;">${avgDiff}</td>
                             </tr>
                             <tr>
-                                <td style="padding: 10px; border-bottom: 1px solid #e6e5f5;">끝자리 다양성</td>
-                                <td style="padding: 10px; border-bottom: 1px solid #e6e5f5; text-align: center;">${uniqueLastDigits}/6 <span style="color: ${uniqueLastDigits >= 4 ? '#4439AC' : 'gray'}; font-size: 0.8em;">${uniqueLastDigits >= 4 ? '✓ 다양' : ''}</span></td>
+                                <td style="padding: 8px; border-bottom: 1px solid #eee;">끝자리 다양성</td>
+                                <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: center;">${uniqueLastDigits}/6 <span style="color: ${uniqueLastDigits >= 4 ? 'green' : 'gray'}; font-size: 0.8em;">${uniqueLastDigits >= 4 ? '✓ 다양' : ''}</span></td>
                             </tr>
                             <tr>
-                                <td style="padding: 10px; border-bottom: 1px solid #e6e5f5;">AC값 (실제/이론)</td>
-                                <td style="padding: 10px; border-bottom: 1px solid #e6e5f5; text-align: center;">${actualAC}/${acValue}</td>
+                                <td style="padding: 8px; border-bottom: 1px solid #eee;">AC값 (실제/이론)</td>
+                                <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: center;">${actualAC}/${acValue}</td>
                             </tr>
                             <tr>
-                                <td style="padding: 10px; border-bottom: 1px solid #e6e5f5;">연속된 번호</td>
-                                <td style="padding: 10px; border-bottom: 1px solid #e6e5f5; text-align: center;">${hasConsecutive ? '있음' : '없음'}</td>
+                                <td style="padding: 8px; border-bottom: 1px solid #eee;">연속된 번호</td>
+                                <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: center;">${hasConsecutive ? '있음' : '없음'}</td>
                             </tr>
                         </table>
                         
                         <div style="margin-top: 15px; margin-bottom: 15px;">
-                            <h4 style="margin-bottom: 10px; font-size: 14px; color: #4439AC;">구간별 분포</h4>
-                            <div style="display: flex; height: 24px; border-radius: 6px; overflow: hidden; margin-top: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                                <div style="width: ${ranges[0]/6*100}%; background-color: #5c52c7; height: 100%;" title="1-10: ${ranges[0]}개"></div>
-                                <div style="width: ${ranges[1]/6*100}%; background-color: #4439AC; height: 100%;" title="11-20: ${ranges[1]}개"></div>
-                                <div style="width: ${ranges[2]/6*100}%; background-color: #6f66d6; height: 100%;" title="21-30: ${ranges[2]}개"></div>
-                                <div style="width: ${ranges[3]/6*100}%; background-color: #3f34a7; height: 100%;" title="31-40: ${ranges[3]}개"></div>
-                                <div style="width: ${ranges[4]/6*100}%; background-color: #524bbc; height: 100%;" title="41-45: ${ranges[4]}개"></div>
+                            <h4 style="margin-bottom: 8px; font-size: 14px; color: #555;">구간별 분포</h4>
+                            <div style="display: flex; height: 20px; border-radius: 3px; overflow: hidden; margin-top: 5px;">
+                                <div style="width: ${ranges[0]/6*100}%; background-color: #FFB300; height: 100%;" title="1-10: ${ranges[0]}개"></div>
+                                <div style="width: ${ranges[1]/6*100}%; background-color: #29B6F6; height: 100%;" title="11-20: ${ranges[1]}개"></div>
+                                <div style="width: ${ranges[2]/6*100}%; background-color: #EF5350; height: 100%;" title="21-30: ${ranges[2]}개"></div>
+                                <div style="width: ${ranges[3]/6*100}%; background-color: #66BB6A; height: 100%;" title="31-40: ${ranges[3]}개"></div>
+                                <div style="width: ${ranges[4]/6*100}%; background-color: #AB47BC; height: 100%;" title="41-45: ${ranges[4]}개"></div>
                             </div>
-                            <div style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 12px; color: #5c52c7;">
+                            <div style="display: flex; justify-content: space-between; margin-top: 5px; font-size: 12px; color: #777;">
                                 <span>1-10 (${ranges[0]})</span>
                                 <span>11-20 (${ranges[1]})</span>
                                 <span>21-30 (${ranges[2]})</span>
