@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://image-merge.golrajo.com/</loc>
+    <loc>https://ai.golrajo.com/</loc>
     <lastmod>2025-04-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://image-merge.golrajo.com/index.html</loc>
+    <loc>https://ai.golrajo.com/image-merger.html</loc>
+    <lastmod>2025-04-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ai.golrajo.com/lotto.html</loc>
     <lastmod>2025-04-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
